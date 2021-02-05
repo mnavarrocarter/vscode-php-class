@@ -36,11 +36,12 @@ export default class ComposerNamespaceResolver implements NamespaceResolver
     public clearCache(): void
     {
         this.namespaces = [];
+        this.composer.deleteCache();
     }
 
     private async parseComposerNamespaces(): Promise<void>
     {   
-        const psr4Namespaces = this.composer.getPsr4Namespaces();
+        const psr4Namespaces = await this.composer.getPsr4Namespaces();
 
         // Then we register the composer namespaces
         Object.keys(psr4Namespaces).forEach(key => {
@@ -50,12 +51,12 @@ export default class ComposerNamespaceResolver implements NamespaceResolver
                 // We are dealing with mutiple paths for the same namesapce.
                 nsPath.forEach(p => {
                     this.namespaces.push(
-                        new Namespace(path.join(this.projectRoot, p), normalizedNs)
+                        new Namespace(Uri.joinPath(this.projectRoot, p), normalizedNs)
                     );
                 });
                 return;
             }
-            this.namespaces.push(new Namespace(path.join(this.projectRoot, nsPath), normalizedNs));
+            this.namespaces.push(new Namespace(Uri.joinPath(this.projectRoot, nsPath), normalizedNs));
         });
 
         // We register the global namespace as a fallback

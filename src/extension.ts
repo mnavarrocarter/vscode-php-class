@@ -21,6 +21,9 @@ export function activate(context: ExtensionContext) {
     const fileWriter = new ComposerPhpFileWriter(vsCodeFs, composer);
     const command  = new CreateClassCommand(vsCodeFs, nsResolver, fileWriter);
 
+    // TODO: Register a listener to detect changes in composer.json and rebuild
+    // the cache.
+
     context.subscriptions.push(commands.registerCommand(
         'extension.createClass', args => command.run(args)
     ));

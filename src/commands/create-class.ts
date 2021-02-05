@@ -1,14 +1,13 @@
 import NamespaceResolver from "../resolver";
-import { FileSystem, window } from 'vscode';
+import { FileSystem, window, workspace, Uri } from 'vscode';
 import { PhpFileWriter } from "../writer";
-import { Uri } from 'vscode'
 
 export default class CreateClassCommand
 {
     private fs: FileSystem;
     private resolver: NamespaceResolver;
     private writer: PhpFileWriter;
-
+    
     public constructor(fs: FileSystem, resolver: NamespaceResolver, writer: PhpFileWriter)
     {
         this.fs = fs;
@@ -20,7 +19,7 @@ export default class CreateClassCommand
      * @param uri The uri of the folder where the file being created is.
      */
     public async run(uri: Uri)
-    {       
+    {
         const namespace = await this.resolver.resolve(uri);
         const realNamespace = namespace.getRealNamespace(uri);
 
@@ -50,8 +49,8 @@ export default class CreateClassCommand
             // File does not exist, so we are cool.
         }
 
-        debugger;
-
         await this.writer.write(targetUri, name, type.toLowerCase());
+        await workspace.openTextDocument(targetUri);
+        window.showTextDocument(targetUri);
     }
 }

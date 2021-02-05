@@ -21,12 +21,12 @@ export default class Composer
     private async ensureIsParsed(): Promise<void>
     {
         if (!this.parsedjson) {
-            const bytes = this.fs.readFile(this.composerUri);
+            const bytes = await this.fs.readFile(this.composerUri);
             this.parsedjson = JSON.parse(bytes.toString());
         }
     }
 
-    private deleteCache(): void
+    public deleteCache(): void
     {
         this.parsedjson = undefined;        
     }

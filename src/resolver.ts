@@ -37,7 +37,8 @@ export class Namespace {
         if (!this.isContainedIn(uri)) {
             return '';
         }
-        return this.baseNamespace.concat(uri.fsPath.replace(this.baseUri.fsPath, '').replace('/', '\\'));
+        const basePath = uri.fsPath.replace(this.baseUri.fsPath, '');
+        return this.baseNamespace.concat(basePath).split(path.sep).join('\\');
     }
     
     public filenameForType(type: string): Uri
