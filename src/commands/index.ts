@@ -1,0 +1,1 @@
+export { default as CreateClassCommand } from './create-class';
