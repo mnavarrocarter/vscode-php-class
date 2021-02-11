@@ -1,17 +1,17 @@
-import NamespaceResolver from "../resolver";
 import { FileSystem, window, workspace, Uri } from 'vscode';
 import { PhpFileWriter } from "../writer";
+import { Composer } from "../composer";
 
 export default class CreateClassCommand
 {
     private fs: FileSystem;
-    private resolver: NamespaceResolver;
+    private composer: Composer;
     private writer: PhpFileWriter;
     
-    public constructor(fs: FileSystem, resolver: NamespaceResolver, writer: PhpFileWriter)
+    public constructor(fs: FileSystem, composer: Composer, writer: PhpFileWriter)
     {
         this.fs = fs;
-        this.resolver = resolver;
+        this.composer = composer;
         this.writer = writer;
     }
 
@@ -20,16 +20,16 @@ export default class CreateClassCommand
      */
     public async run(uri: Uri)
     {
-        const namespace = await this.resolver.resolve(uri);
-        const realNamespace = namespace.getRealNamespace(uri);
-
-        const name = await window.showInputBox({
+        const rootNamespace = await this.composer.findRootNamespaceFor(uri);
+        const nsString = rootNamespace.createRealNamespaceFor(uri);
+        
+        const fqcn = await window.showInputBox({
             prompt: 'Name',
-            value: realNamespace.concat('\\'),
-            valueSelection: [realNamespace.length + 1, realNamespace.length + 1]
+            value: nsString.concat('\\'),
+            valueSelection: [nsString.length + 1, nsString.length + 1]
         });
 
-        if (!name) {
+        if (!fqcn) {
             return;
         }
         
@@ -38,8 +38,7 @@ export default class CreateClassCommand
             placeHolder: 'Select the type of class file you want to create' 
         });
 
-        // We prepare the default path based on the namespace.
-        const targetUri = namespace.filenameForType(name);
+        const targetUri = rootNamespace.createUriFor(fqcn);
         
         try {
             const _ = await this.fs.stat(targetUri);
@@ -49,7 +48,7 @@ export default class CreateClassCommand
             // File does not exist, so we are cool.
         }
 
-        await this.writer.write(targetUri, name, type.toLowerCase());
+        await this.writer.write(targetUri, fqcn, type.toLowerCase());
         await workspace.openTextDocument(targetUri);
         window.showTextDocument(targetUri);
     }

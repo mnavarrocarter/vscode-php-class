@@ -1,7 +1,7 @@
 {
   "name": "php-class",
   "displayName": "PHP Class",
-  "description": "IDE-like PHP class creation with namespace support.",
+  "description": "IDE-like PHP class creation with psr-4 namespace support",
   "version": "0.0.1",
   "publisher": "mnavarrocarter",
   "engines": {
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Sevavietl/vscode-php-files.git"
+    "url": "https://github.com/mnavarrocarter/vscode-php-class.git"
   },
   "categories": [
     "Other"
@@ -29,42 +29,6 @@
   ],
   "main": "./out/extension",
   "contributes": {
-    "configuration": {
-      "type": "object",
-      "title": "PHP Files configuration",
-      "properties": {
-        "php-files.templates.PHPClass": {
-          "type": "array",
-          "default": [
-            "<?php",
-            "class PHPClass",
-            "{",
-            "}"
-          ],
-          "description": "Template for PHP Class"
-        },
-        "php-files.templates.PHPInterface": {
-          "type": "array",
-          "default": [
-            "<?php",
-            "interface PHPInterface",
-            "{",
-            "}"
-          ],
-          "description": "Template for PHP Interface"
-        },
-        "php-files.templates.PHPTrait": {
-          "type": "array",
-          "default": [
-            "<?php",
-            "trait PHPTrait",
-            "{",
-            "}"
-          ],
-          "description": "Template for PHP Trait"
-        }
-      }
-    },
     "commands": [
       {
         "command": "extension.createClass",
@@ -93,9 +57,5 @@
     "ts-mockito": "^2.2.7",
     "typescript": "^3.9.7",
     "vscode-test": "^1.5.0"
-  },
-  "dependencies": {
-    "fs-extra": "^5.0.0",
-    "php-writer": "git+https://github.com/Sevavietl/php-writer.git"
   }
 }

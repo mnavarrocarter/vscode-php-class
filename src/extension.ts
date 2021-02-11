@@ -1,6 +1,6 @@
 'use strict';
-import { commands, workspace, ExtensionContext, Uri } from 'vscode';
-import { Composer, ComposerNamespaceResolver } from './composer';
+import { commands, workspace, ExtensionContext, Uri, window } from 'vscode';
+import { Composer } from './composer';
 import { CreateClassCommand } from './commands';
 import ComposerPhpFileWriter from './composer/writer';
 
@@ -17,16 +17,24 @@ export function activate(context: ExtensionContext) {
     const composerUri = Uri.joinPath(rootUri, 'composer.json');
 
     const composer = new Composer(vsCodeFs, composerUri);
-    const nsResolver = new ComposerNamespaceResolver(rootUri, composer);
     const fileWriter = new ComposerPhpFileWriter(vsCodeFs, composer);
-    const command  = new CreateClassCommand(vsCodeFs, nsResolver, fileWriter);
+    const command  = new CreateClassCommand(vsCodeFs, composer, fileWriter);
 
-    // TODO: Register a listener to detect changes in composer.json and rebuild
-    // the cache.
+    const clearCahe = (uri: Uri) => {
+        if (uri.toString() === composerUri.toString()) {
+            window.showInformationMessage('Changes in composer.json detected. Rebuilding namespace information.')
+            composer.rebuildCache();
+        }
+    };
+
+    const watcher = workspace.createFileSystemWatcher('**/*.json');
 
     context.subscriptions.push(commands.registerCommand(
         'extension.createClass', args => command.run(args)
     ));
+    context.subscriptions.push(watcher.onDidChange(clearCahe));
+    context.subscriptions.push(watcher.onDidDelete(clearCahe));
+    context.subscriptions.push(watcher);
 }
 
 export function deactivate() {;

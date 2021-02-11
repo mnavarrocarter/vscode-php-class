@@ -1,109 +1,45 @@
 PHP Class
 =========
 
-A fork of PHP Files extension that helps you create PHP Files with the correct
-namespaces read from your `composer.json`. 
+An extension that allows you to create classes, interfaces and traits with
+namespace information from your `composer.json`.
 
-## A Story Behind
+## Why?
 
-I like using [Visual Studio Code](https://code.visualstudio.com/).
-But I was not satisfied with the process of creating PHP files. It always
-involves at least two steps: creation of the file and creation of the content.
-Even if you use snippets or templates you have to provide name twice. Even further,
-if you follow [PSR-4](http://www.php-fig.org/psr/psr-4/) (and nowadays you should
-try to always follow it) you have to add namespace yourself.
+VsCode is a good editor, but I've always struggled with the lack of features
+in terms of PHP class creation and namespaces managements. Sometimes it can be
+really tedious to add namespaces to your PHP files. I coded this extension to
+save me that time when working in codebases with PSR-4 autoloading.
 
 ## Features
 
 ### Automatic PSR-4 Namespace Resolution
 
-This extension understands your `composer.json` namespace structure.
+This extension understands your `composer.json` namespace structure and creates
+your files in the righ directory with the correct namespace.
 
-### Files creation
+### Support for Classes, Interfaces and Traits
 
-For now you have the following options for creating files from Explorer context
-menu:
+You can create either classes, interfaces and traits.
 
-#### New PHP Class
+### Support for Remote Coding
+
+This extension uses the new VsCode filesystem api so file creation works even
+when working on remote contexts like WSDL or LiveShare.
+
+### Composer.json file change detection
+
+If you change your `composer.json`, the root namespace information is rebuilt.
+
+## How To Use
 
 1. Select `New PHP Class` from the context menu inside Explorer.
-2. Enter full _PHP Class_ name (e.g. 'Foo\Bar\Baz') and press enter to proceed or enter escape to discard.
-3. Enter parent _PHP Class_ name. You can leave it empty and press enter to proceed to the implements,
-or short-exit with escape to create class without extends or implements.
-4. Enter _PHP Interfaces_ names (can be separated by comma).
+2. Enter the Fully Qualified Class Name (e.g. 'Foo\Bar\Baz') and press enter to proceed or enter escape to discard.
+3. Choose wether the class file is going to be a class, and interface or a trait.
+4. Enjoy!
 
-![php_files_class_creation](images/php_files_class_creation.gif)
+![php_class_creation](images/create-class.gif)
 
-#### New PHP Interface
+## Roadmap
 
-1. Select `New PHP Interface` from the context menu inside Explorer.
-2. Enter full _PHP Interface_ name (e.g. 'Foo\Bar\Baz') and press enter to proceed or enter escape to discard.
-3. Enter _PHP Interfaces_ names (can be separated by comma).
-
-![php_files_interface_creation](images/php_files_interface_creation.gif)
-
-#### New PHP Trait
-
-1. Select `New PHP Trait` from the context menu inside Explorer.
-2. Enter full _PHP Trait_ name (e.g. 'Foo\Bar\Baz') and press enter to proceed or enter escape to discard.
-
-![php_files_trait_creation](images/php_files_trait_creation.gif)
-
-## Extension Settings
-
-This extension contributes the following settings:
-
-```json
-// Template for PHP Class
-"php-files.templates.PHPClass": [
-    "<?php",
-    "class PHPClass",
-    "{",
-    "}"
-],
-
-// Template for PHP Interface
-"php-files.templates.PHPInterface": [
-    "<?php",
-    "interface PHPInterface",
-    "{",
-    "}"
-],
-
-// Template for PHP Trait
-"php-files.templates.PHPTrait": [
-    "<?php",
-    "trait PHPTrait",
-    "{",
-    "}"
-],
-```
-
-## Known Issues
-
-When you create new files a bunch of new lines created in the end of it.
-I will investigate this. As a temporary solution you can set file of the vscode itself to remove them on save settings:
-
-```json
-
-"files.insertFinalNewline": true,
-"files.trimFinalNewlines": true,
-
-```
-
-## TODO
-
-- Allow using of commands from the command palette.
-- Implement tests.
-- Implement `PHP File Rename`
-- Implement `PHP File Duplicate`
-
-## Acknowledgments
-
-All the hardcore PHP AST staff is done by [php_writer](https://github.com/glayzzle/php-writer), which itself uses following great libraries:
-
-- [php-parser](https://github.com/glayzzle/php-parser)
-
-- [php-unparser](https://github.com/chris-l/php-unparser)
-
-I cannot thank the creators and contributers of those packages enough!
+- Support for renaming classes and move them to the right namespace
